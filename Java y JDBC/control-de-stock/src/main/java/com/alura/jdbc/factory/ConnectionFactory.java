@@ -18,13 +18,16 @@ public class ConnectionFactory {
 		pooledDataSource.setJdbcUrl("jdbc:mysql://localhost/control_de_stock?useTimeZone=true&serverTimeZone=UTC");
 		pooledDataSource.setUser("root");
 		pooledDataSource.setPassword("@Mac40957026");
-		pooledDataSource.setMaxPoolSize(10);
 		
 		this.datasource = pooledDataSource;
 	}
 	
-	public Connection recuperaConexion() throws SQLException {
-		return this.datasource.getConnection();
+	public Connection recuperaConexion(){
+		try {
+			return this.datasource.getConnection();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }
