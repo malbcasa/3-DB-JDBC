@@ -23,13 +23,16 @@ public class ProductoDAO {
 	
 	public void guardar(Producto producto) {
 		try{
-			PreparedStatement stm = con.prepareStatement("INSERT INTO PRODUCTO (nombre, descripcion, cantidad) "
-					+ " VALUES (?, ?, ?)",
+			PreparedStatement stm = con
+					.prepareStatement("INSERT INTO PRODUCTO "
+							+ "(nombre, descripcion, cantidad, categoria_id) "
+							+ " VALUES (?, ?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
 			try(stm){
 				stm.setString(1, producto.getNombre());
                 stm.setString(2, producto.getDescripcion());
                 stm.setInt(3, producto.getCantidad());
+                stm.setInt(4, producto.getCategoriaId());
     
                 stm.execute();
     
@@ -121,5 +124,37 @@ public class ProductoDAO {
 		}catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public List<Producto> listar(Integer categoriaId) {
+		List<Producto> resultado = new ArrayList<>();
+		
+		try{
+			var querySelect = "SELECT ID, NOMBRE, DESCRIPCION, CANTIDAD "
+					+ "FROM PRODUCTO "
+					+ "WHERE CATEGORIA_ID = ?";
+			System.out.println(querySelect);
+			final PreparedStatement stm = con.prepareStatement(querySelect);
+			
+			try(stm){
+				stm.setInt(1, categoriaId);
+				stm.execute();
+				
+				final ResultSet rs = stm.getResultSet();
+				
+				try(rs){
+					while(rs.next()) {
+						Producto fila = new Producto(rs.getInt("ID"),
+								rs.getString("NOMBRE"),
+								rs.getString("DESCRIPCION"),
+								rs.getInt("CANTIDAD"));						
+						resultado.add(fila);
+					}
+				}
+			}	
+		}catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return resultado;
 	}
 }
