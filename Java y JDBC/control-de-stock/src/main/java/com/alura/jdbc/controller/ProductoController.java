@@ -21,7 +21,7 @@ public class ProductoController {
 		
 		try(con){
 			final PreparedStatement stm = con.prepareStatement("UPDATE PRODUCTO SET "
-					+ "NOMBRE = ?," 
+					+ "NOMBRE = ?" 
 					+ ", DESCRIPCION = ?"
 					+ ", CANTIDAD = ?"
 					+ " WHERE ID = ?");
